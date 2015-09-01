@@ -1,5 +1,5 @@
 # DSDC-Dynamic.Scalable.DataCenter
-Dynamic Scalable DataCenter
+DSDC (Dynamic Scalable DataCenter)
 
 This project is a demonstration of dynamic scaling within a datacenter.
 For detailed information, refer to the following document:
