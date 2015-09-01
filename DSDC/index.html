@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta http-equiv="refresh" content="5">
+  </head>
+  <body>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          
+          
+['Time', 'www-1:  37%', 'www-2:  40%', 'www-3:  39%', 'www-4:  35%', 'www-5:  41%', 'www-6:  0%', 'Avg Sys Util:  38%', 'Threshold-ON', 'Threshold-OFF'],
+['01:21:55', 60, 55, 55, 54, 51, 54, 54, 60, 40],
+['01:22:01', 60, 56, 55, 53, 51, 54, 54, 60, 40],
+['01:22:07', 57, 57, 55, 52, 50, 55, 54, 60, 40],
+['01:22:13', 60, 57, 55, 50, 49, 54, 54, 60, 40],
+['01:22:19', 61, 57, 53, 47, 50, 52, 53, 60, 40],
+['01:22:25', 61, 57, 52, 47, 49, 52, 53, 60, 40],
+['01:22:32', 61, 56, 48, 46, 49, 51, 51, 60, 40],
+['01:22:38', 55, 56, 46, 45, 47, 49, 49, 60, 40],
+['01:22:44', 52, 54, 44, 42, 46, 48, 47, 60, 40],
+['01:22:50', 50, 51, 43, 41, 45, 47, 46, 60, 40],
+['01:22:56', 48, 48, 41, 40, 43, 46, 44, 60, 40],
+['01:23:02', 44, 46, 39, 39, 42, 44, 42, 60, 40],
+['01:23:09', 42, 42, 38, 38, 41, 44, 40, 60, 40],
+['01:23:15', 40, 41, 38, 38, 40, 44, 40, 60, 40],
+['01:23:21', 39, 41, 37, 37, 39, 43, 39, 60, 40],
+['01:23:27', 36, 40, 38, 36, 39, 0, 37, 60, 40],
+['01:23:33', 36, 39, 39, 35, 40, 0, 37, 60, 40],
+['01:23:40', 36, 38, 39, 33, 41, 0, 37, 60, 40],
+['01:23:46', 37, 40, 39, 35, 41, 0, 38, 60, 40],
+
+        ]);
+
+        var options = {
+            title: 'DSDC (Dynamically Scaling DataCenter)\nVM CPU Utilization',
+            hAxis: {title: 'Time', minValue: 0, maxValue: 15},
+            vAxis: {title: 'CPU Load (%)', minValue: 0, maxValue: 15},
+        
+	    colors: ['#FF99FF', '#FF3300', '#FF9900', '#E6E616', '#33CC33', '#0099FF', '#000000', '#B2B2B2', '#B2B2B2']
+	};
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    
+    
+  </body>
+</html>
+

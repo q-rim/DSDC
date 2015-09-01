@@ -1,0 +1,129 @@
+#! /usr/bin/python
+# useage:   loadgen <load%> <var%-optional>
+
+# use dictionary
+# get server status
+# get
+
+import random
+import sys
+import subprocess
+import time
+
+varIN = 30;		# default variance
+user="hyejin";  ip=["192.168.122.21", "192.168.122.22", "192.168.122.23", "192.168.122.24", "192.168.122.25", "192.168.122.26"];
+
+def numServUP():
+	# checks all server UP-status using fping.
+	# returns the total number of servers UP.
+        isUP=[None]*len(ip);
+        for i in range(len(ip)):
+                #CMD = "fping -c1 "+ip[i]+ " 2>/dev/null";
+		snmp_community = "DSDC"
+                CMD = "snmpwalk -v2c -c " + snmp_community + " " + ip[i] + " -On .1.3.6.1.2.1.25.3.3.1.2 | tail -n 1 | cut -c 40-42"
+		p = subprocess.Popen(CMD, stdout=subprocess.PIPE, shell=True)          # communicate with Shell
+                (output, err) = p.communicate()
+                #print "**** stdout: \n", output;       print "**** stderr: \n", err
+		if output=="":
+                        isUP[i]=0
+                elif output=="nce\n":
+                        isUP[i]=0
+                else:
+                        isUP[i]=1
+
+		# fpgin method
+		#if output=="":
+                #        isUP[i]=0
+                #elif "% loss)" in output:
+                #        isUP[i]=1
+                #else:
+                #        isUP[i]=0
+
+                #print isUP
+	#total = sum(isUP)
+        #print "Total servers UP:", isUP,  "=", total
+	#return total
+	return isUP
+
+
+# Command line input handling
+if len(sys.argv) == 1:				# no argument passed in.
+	load = int(raw_input("Enter the load(%): "));
+elif len(sys.argv) == 2:
+	load = int(sys.argv[1]); 		# pass in argument from CLI
+elif len(sys.argv) == 3:
+	load = int(sys.argv[1]); 		# pass in argument from CLI
+	varIN = int(sys.argv[2]); 		# pass in argument from CLI
+else:
+	print "Error:  too many arguments(Maximum 2 arguments).  # of arguments you've put in:", len(sys.argv)-1;	sys.exit(0)
+
+print "Input load: " +str(load)+ "%"
+print "Input var:  " +str(varIN)+ "%"
+
+
+# Main -------------------------
+arrUP = numServUP()
+numUP = sum(arrUP)
+netLoad = numUP * load;		print "netLoad = ", numUP, "x", load, "=", netLoad;
+
+for n in range(1000):
+	# Set server load value for each server
+	print; print "---------------------------"
+	print "Time:  ", time.strftime("%H:%M:%S")
+	numUP = sum(numServUP())
+	print "Total servers UP:", numServUP(),  "=", numUP
+	eachLoad = netLoad / numUP;	print "eachLoad = netLoad / numUP =", netLoad, "/", numUP, "=", eachLoad, "%"
+	
+
+	servLoad=[];
+	for i in range(len(ip)):
+		# calculate total load applied
+		ran = random.randrange(varIN) +1;		
+		var = ran-varIN/2;							# variance
+		total_load = min(max(eachLoad+var, 1), 99)		# actual load applied to the server.  capped at [1-99]
+		servLoad.append(total_load);
+		print "www-"+str(i+1) +":  "+ str(eachLoad * arrUP[i])+ "% + " +str(var * arrUP[i])+ "% = " +str(servLoad[i] * arrUP[i])+ "%"
+	#print servLoad
+	print "avg load: ", sum(servLoad)/len(servLoad)
+
+	for i in range(len(ip)):
+		# Send server load value to each server
+		cmd_ssh="ssh "+user+"@"+ip[i]+" -t "
+		CMD = cmd_ssh+ "pkill lookbusy &> /dev/null"	
+		print "CLI: ", CMD,
+		p = subprocess.Popen(CMD, stdout=subprocess.PIPE, shell=True)		# communicate with Shell
+		(output, err) = p.communicate()
+		#print "**** stdout: \n", output;	print "**** stderr: \n", err
+
+		CMD = cmd_ssh+ "lookbusy -c " +str(servLoad[i])+ " &> /dev/null &";	
+		#print "  CLI: ", CMD;
+		print "  CLI: ", cmd_ssh+ "lookbusy -c " +str(servLoad[i] * arrUP[i])+ " &> /dev/null &";
+		p = subprocess.Popen(CMD, stdout=subprocess.PIPE, shell=True)		# communicate with Shell
+		(output, err) = p.communicate()
+		#print "**** stdout: \n", output;	print "**** stderr: \n", err
+	
+	time.sleep(5)	# delay for 5 sec
+
+
+# MAX_CPU_LOAD=$1
+# for i in {1..100000}
+# do
+
+# # Make CPU Load vary
+# VAR1=$((RANDOM % 30)); CPU_LOAD1=$((MAX_CPU_LOAD-VAR1));	echo "www-1:  $1 +/- $VAR1 = $CPU_LOAD1 %";
+# VAR2=$((RANDOM % 30)); CPU_LOAD2=$((MAX_CPU_LOAD-VAR2));	echo "www-2:  $1 +/- $VAR2 = $CPU_LOAD2 %";
+# VAR3=$((RANDOM % 30)); CPU_LOAD3=$((MAX_CPU_LOAD-VAR3));	echo "www-3:  $1 +/- $VAR3 = $CPU_LOAD3 %";
+# VAR4=$((RANDOM % 30)); CPU_LOAD4=$((MAX_CPU_LOAD-VAR4));	echo "www-4:  $1 +/- $VAR4 = $CPU_LOAD4 %";
+# VAR5=$((RANDOM % 30)); CPU_LOAD5=$((MAX_CPU_LOAD-VAR5));	echo "www-5:  $1 +/- $VAR5 = $CPU_LOAD5 %";
+# VAR6=$((RANDOM % 30)); CPU_LOAD6=$((MAX_CPU_LOAD-VAR6));	echo "www-6:  $1 +/- $VAR6 = $CPU_LOAD6 %";
+# echo "----------------------------"
+# # Kill Lookbusy processes before applying new load
+# ssh hyejin@192.168.122.21 -t pkill lookbusy &> /dev/null;		ssh hyejin@192.168.122.21 -t lookbusy -c $CPU_LOAD1 &> /dev/null &
+# ssh hyejin@192.168.122.22 -t pkill lookbusy &> /dev/null; 	ssh hyejin@192.168.122.22 -t lookbusy -c $CPU_LOAD2 &> /dev/null &
+# ssh hyejin@192.168.122.23 -t pkill lookbusy &> /dev/null; 	ssh hyejin@192.168.122.23 -t lookbusy -c $CPU_LOAD2 &> /dev/null &
+# ssh hyejin@192.168.122.24 -t pkill lookbusy &> /dev/null;		ssh hyejin@192.168.122.24 -t lookbusy -c $CPU_LOAD2 &> /dev/null &
+# ssh hyejin@192.168.122.25 -t pkill lookbusy &> /dev/null;		ssh hyejin@192.168.122.25 -t lookbusy -c $CPU_LOAD2 &> /dev/null &
+# ssh hyejin@192.168.122.26 -t pkill lookbusy &> /dev/null;		ssh hyejin@192.168.122.26 -t lookbusy -c $CPU_LOAD2 &> /dev/null &
+
+# sleep 5
+# done

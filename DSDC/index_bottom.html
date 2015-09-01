@@ -1,0 +1,20 @@
+
+        ]);
+
+        var options = {
+            title: 'DSDC (Dynamically Scaling DataCenter)\nVM CPU Utilization',
+            hAxis: {title: 'Time', minValue: 0, maxValue: 15},
+            vAxis: {title: 'CPU Load (%)', minValue: 0, maxValue: 15},
+        
+	    colors: ['#FF99FF', '#FF3300', '#FF9900', '#E6E616', '#33CC33', '#0099FF', '#000000', '#B2B2B2', '#B2B2B2']
+	};
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    
+    
+  </body>
+</html>
