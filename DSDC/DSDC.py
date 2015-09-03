@@ -6,8 +6,8 @@ from datetime import datetime
 
 def getCPU_util():
 	"""1. Collects CPU utilization of each server via snmpwalk.
-	2. If the average utilization of all the server is higher than uppper threashold, it sends command to turn on the standby server.
-	If the average utilization of all the server is lower than the lower threashold, it sends command to turn off the standby server.
+	2. If the average utilization of all the server is higher than uppper threshold, it sends command to turn on the standby server.
+	If the average utilization of all the server is lower than the lower threshold, it sends command to turn off the standby server.
 	3. returns string in following format:  
 			['13:48:03', 12, 2, 15, 12, 2, 0, 8, 60, 40],
 			['hh:mm:ss', serv1Util, serv2Util, serv3Util, serv4Util, serv5Util, servStandByUtil, AvgUtil, UpperThreshold, LowerThreshold],
@@ -167,19 +167,20 @@ def updateWebPage():
 
 
 # Main
-html_list = []
-max_data_point = 45	# number of max time increment in a graph.
+if __name__ == "__main__":
+	html_list = []
+	max_data_point = 45	# number of max time increment in a graph.
 
-#duration_of_test = 100000	# number of interation of run.
-#for i in range(duration_of_test):
-while True:
-	t0 = datetime.now()	
-	print "--------------------------------------------------------------------------------------------";
-	generateHtmlList()
-	updateWebPage()
+	#duration_of_test = 100000	# number of iteration of run.
+	#for i in range(duration_of_test):
+	while True:
+		t0 = datetime.now()	
+		print "--------------------------------------------------------------------------------------------";
+		generateHtmlList()
+		updateWebPage()
 
-	# Ensure this process runs at even x sec interval
-	time_increment = 6;	# sec
-	timePause(time_increment)
+		# Ensure this process runs at even x sec interval
+		time_increment = 6;	# sec
+		timePause(time_increment)
 
-	
+
