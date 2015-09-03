@@ -97,7 +97,7 @@ def getCPU_util():
 
 
 
-def timePause(time_in):
+def timePause(time_in, t0):
 	"""Creates pause of x sec for each iteration.
 	"""
         t1 = datetime.now()
@@ -167,20 +167,27 @@ def updateWebPage():
 
 
 # Main
-if __name__ == "__main__":
-	html_list = []
-	max_data_point = 45	# number of max time increment in a graph.
+#if __name__ == "__main__":
+def main():
+	#html_list = []
+	#max_data_point = 45	# number of max time increment in a graph.
 
 	#duration_of_test = 100000	# number of iteration of run.
 	#for i in range(duration_of_test):
 	while True:
-		t0 = datetime.now()	
+		t_now = datetime.now()	
 		print "--------------------------------------------------------------------------------------------";
 		generateHtmlList()
 		updateWebPage()
 
 		# Ensure this process runs at even x sec interval
 		time_increment = 6;	# sec
-		timePause(time_increment)
+		timePause(time_increment, t_now)
 
 
+
+html_list = []
+max_data_point = 45    # number of max time increment in a graph.
+
+if __name__ == "__main__":
+	main()
