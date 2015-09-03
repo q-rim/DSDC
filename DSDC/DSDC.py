@@ -169,11 +169,6 @@ def updateWebPage():
 # Main
 #if __name__ == "__main__":
 def main():
-	#html_list = []
-	#max_data_point = 45	# number of max time increment in a graph.
-
-	#duration_of_test = 100000	# number of iteration of run.
-	#for i in range(duration_of_test):
 	while True:
 		t_now = datetime.now()	
 		print "--------------------------------------------------------------------------------------------";
